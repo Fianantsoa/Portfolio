@@ -13,9 +13,11 @@
 
 ## 🧑‍💻 About Me
 
-I'm a passionate developer exploring a wide range of technologies — from low-level systems programming in **C** to full-stack **web development** with **PHP**, **Python**, and modern front-end tools. I enjoy automating workflows, building practical applications, and continuously expanding my skill set.
+I'm **Fianantsoa**, a self-driven developer from **Madagascar** 🇲🇬 with a deep curiosity for how software works at every level — from managing raw memory in C to shipping full-stack web applications in PHP. I'm currently honing my craft through the rigorous **42 school curriculum**, where projects like `mylibft`, `ft_printf`, and `Get-next-line` have sharpened my understanding of systems programming and low-level design.
 
-This portfolio was **automatically generated and organized by an AI agent** as a "vibe coding" experiment — showcasing the power of automation in developer workflows.
+Beyond the curriculum, I love building things that solve real problems: a **car rental platform** for everyday users, tools for **data analysis and prediction**, and web experiences that feel personal. I believe clean code, curiosity, and consistent iteration are the foundations of great engineering.
+
+> 💡 *Fun fact: this portfolio was **automatically generated and organized by an AI agent** as a "vibe coding" experiment — a small demonstration of what thoughtful automation can produce.*
 
 ---
 
@@ -51,30 +53,30 @@ This portfolio was **automatically generated and organized by an AI agent** as a
 
 ### 🌐 Web Development (PHP)
 
-> Full-featured web applications built with native PHP, demonstrating backend development skills.
+> Full-featured web applications built with **native PHP** (no frameworks), demonstrating solid backend fundamentals: routing, database interaction, form handling, and session management.
 
 | Project | Description | Language | Last Updated |
 |---|---|---|---|
 | [**VaikaLocation**](https://github.com/Fianantsoa/VaikaLocation) | Online car rental web application built in pure/native PHP — manages vehicles, bookings, and customers. | ![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat&logo=php&logoColor=white) | Mar 2026 |
-| [**DetProMada**](https://github.com/Fianantsoa/DetProMada) | PHP-based web project. | ![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat&logo=php&logoColor=white) | Jun 2024 |
+| [**DetProMada**](https://github.com/Fianantsoa/DetProMada) | A web project centered on Malagasy products and local content, built with PHP. | ![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat&logo=php&logoColor=white) | Jun 2024 |
 
 ---
 
 ### 🎨 Frontend & Portfolio (CSS / HTML)
 
-> Personal portfolio sites and frontend-focused projects showcasing design and styling skills.
+> Personal portfolio sites and frontend experiments focused on **clean design, responsive layouts, and user experience** — showcasing how I present myself and my work to the world.
 
 | Project | Description | Language | Last Updated |
 |---|---|---|---|
-| [**mon-portfolio**](https://github.com/Fianantsoa/mon-portfolio) | Personal portfolio website. | ![CSS](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white) | Jul 2025 |
+| [**mon-portfolio**](https://github.com/Fianantsoa/mon-portfolio) | Latest iteration of my personal portfolio — a responsive, clean site built to present projects, skills, and contact info. | ![CSS](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white) | Jul 2025 |
 | [**Porfolio**](https://github.com/Fianantsoa/Porfolio) | An earlier iteration of my personal portfolio site. | ![CSS](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white) | Jul 2024 |
-| [**MonBlog**](https://github.com/Fianantsoa/MonBlog) | A personal blog project. | — | Jul 2024 |
+| [**MonBlog**](https://github.com/Fianantsoa/MonBlog) | A personal blog platform for sharing tutorials, dev notes, and thoughts on technology. | — | Jul 2024 |
 
 ---
 
 ### 🐍 Data & Automation (Python)
 
-> Projects using Python for data processing, prediction, and automation.
+> Applying Python to explore **data-driven insights** — from scraping and processing data to building predictive models and analysis tools.
 
 | Project | Description | Language | Last Updated |
 |---|---|---|---|
@@ -84,7 +86,7 @@ This portfolio was **automatically generated and organized by an AI agent** as a
 
 ### ☕ Java Applications
 
-> Object-oriented applications built with Java.
+> Applying **object-oriented design principles** in Java to model real-world systems — building maintainable, well-structured applications with clear separation of concerns.
 
 | Project | Description | Language | Last Updated |
 |---|---|---|---|
@@ -94,12 +96,12 @@ This portfolio was **automatically generated and organized by an AI agent** as a
 
 ### 🤖 AI & Automation Experiments
 
-> Experimental projects exploring AI-assisted development and automation.
+> Pushing the boundaries of **AI-assisted development** — using agents and automation to tackle creative challenges and explore what's possible when you let machines collaborate on code.
 
 | Project | Description | Last Updated |
 |---|---|---|
 | [**Porfolio-By-Agent**](https://github.com/Fianantsoa/Porfolio-By-Agent) | "Vibe coding" experiment: this portfolio itself, automatically organized and generated by a GitHub AI agent. | Mar 2026 |
-| [**BigWar**](https://github.com/Fianantsoa/BigWar) | Experimental project. | Jul 2024 |
+| [**BigWar**](https://github.com/Fianantsoa/BigWar) | A strategy/war game project exploring game logic, turn management, and interactive mechanics. | Jul 2024 |
 
 ---
 
