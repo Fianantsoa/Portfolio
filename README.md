@@ -21,6 +21,14 @@ Beyond the curriculum, I love building things that solve real problems: a **car 
 
 ---
 
+## 👀 Aperçu rapide (comment voir le rendu ?)
+
+- **Aperçu en ligne immédiat :** ouvrez la version rendue sur GitHub ici ➜ [Voir l'aperçu](https://github.com/Fianantsoa/Porfolio-By-Agent#readme).
+- **Aperçu plein écran :** depuis la page du dépôt, appuyez sur la touche `.` (ou utilisez [github.dev](https://github.dev/Fianantsoa/Porfolio-By-Agent)) puis `Ctrl/Cmd + Shift + V` pour afficher le rendu Markdown dans l'éditeur web.
+- **Aperçu en local :** clonez le dépôt, ouvrez `README.md` dans VS Code et utilisez `Ctrl/Cmd + Shift + V` pour la prévisualisation Markdown (ou « Open Preview to the Side »).
+
+---
+
 ## 🛠️ Skills & Technologies
 
 <div align="center">
