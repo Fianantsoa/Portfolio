@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fianantsoa — Full-Stack Developer</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ========== CANVAS (Three.js background) ========== -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- ========== NAVIGATION ========== -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo">
+        <span class="logo-bracket">&lt;</span>FIA<span class="logo-bracket">/&gt;</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="#about" class="mobile-link">About</a>
+      <a href="#projects" class="mobile-link">Projects</a>
+      <a href="#skills" class="mobile-link">Skills</a>
+      <a href="#contact" class="mobile-link">Contact</a>
+    </div>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section id="hero">
+    <div class="hero-content">
+      <p class="hero-greeting reveal-fade">Hello, World! 👋 I'm</p>
+      <h1 class="hero-name reveal-up">Fianantsoa</h1>
+      <div class="hero-typewriter">
+        <span id="typewriter-text"></span><span class="cursor">|</span>
+      </div>
+      <p class="hero-sub reveal-fade">
+        Self-driven developer from <span class="accent">Madagascar 🇲🇬</span> — 42 School student crafting low-level systems and full-stack web apps.
+      </p>
+      <div class="hero-cta reveal-up">
+        <a href="#projects" class="btn btn-primary">View My Work</a>
+        <a href="#contact" class="btn btn-ghost">Get In Touch</a>
+      </div>
+      <div class="hero-scroll-hint">
+        <div class="scroll-line"></div>
+        <span>Scroll</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+      <div class="code-card glass">
+        <div class="code-card-header">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+          <span class="code-card-title">profile.c</span>
+        </div>
+        <pre class="code-block"><span class="c-kw">typedef struct</span> s_dev {
+  <span class="c-kw">char</span>  *name;
+  <span class="c-kw">char</span>  *role;
+  <span class="c-kw">char</span>  *school;
+  <span class="c-kw">char</span>  *location;
+  <span class="c-kw">bool</span>  open_to_work;
+} t_dev;
+
+t_dev me = {
+  <span class="c-str">"Fianantsoa"</span>,
+  <span class="c-str">"Full-Stack Dev"</span>,
+  <span class="c-str">"42 School"</span>,
+  <span class="c-str">"Madagascar 🇲🇬"</span>,
+  <span class="c-kw">true</span>
+};</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT ========== -->
+  <section id="about" class="section">
+    <div class="container">
+      <h2 class="section-title reveal-up"><span class="accent">//</span> About Me</h2>
+      <div class="about-grid">
+        <div class="about-text reveal-left">
+          <p>
+            I'm a <strong>self-driven developer</strong> with a deep curiosity for how software works at every level — from managing raw memory in C to shipping full-stack web applications in PHP.
+          </p>
+          <p>
+            Currently honing my craft through the rigorous <span class="accent"><strong>42 school curriculum</strong></span>, where projects like <code>mylibft</code>, <code>ft_printf</code>, and <code>Get-next-line</code> have sharpened my understanding of systems programming and low-level design.
+          </p>
+          <p>
+            Beyond the curriculum, I love building things that solve real problems: a <strong>car rental platform</strong>, tools for <strong>data analysis and prediction</strong>, and web experiences that feel personal. I believe clean code, curiosity, and consistent iteration are the foundations of great engineering.
+          </p>
+          <div class="about-stats">
+            <div class="stat-card glass">
+              <span class="stat-number">10+</span>
+              <span class="stat-label">Projects</span>
+            </div>
+            <div class="stat-card glass">
+              <span class="stat-number">5+</span>
+              <span class="stat-label">Languages</span>
+            </div>
+            <div class="stat-card glass">
+              <span class="stat-number">42</span>
+              <span class="stat-label">School</span>
+            </div>
+          </div>
+        </div>
+        <div class="about-visual reveal-right">
+          <div class="avatar-wrapper">
+            <div class="avatar-ring"></div>
+            <div class="avatar-glow"></div>
+            <div class="avatar-placeholder">
+              <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="60" cy="45" r="25" fill="url(#avatarGrad)"/>
+                <ellipse cx="60" cy="100" rx="38" ry="22" fill="url(#avatarGrad)"/>
+                <defs>
+                  <linearGradient id="avatarGrad" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#6c63ff"/>
+                    <stop offset="100%" stop-color="#3ecfcf"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+          </div>
+          <div class="floating-badge badge-1 glass">
+            <span>🎓 42 School</span>
+          </div>
+          <div class="floating-badge badge-2 glass">
+            <span>🇲🇬 Madagascar</span>
+          </div>
+          <div class="floating-badge badge-3 glass">
+            <span>🤖 AI Enthusiast</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PROJECTS ========== -->
+  <section id="projects" class="section">
+    <div class="container">
+      <h2 class="section-title reveal-up"><span class="accent">//</span> Projects</h2>
+      <div class="project-filters reveal-fade">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="systems">Systems</button>
+        <button class="filter-btn" data-filter="web">Web</button>
+        <button class="filter-btn" data-filter="data">Data & AI</button>
+      </div>
+      <div class="projects-grid">
+
+        <!-- Systems projects -->
+        <article class="project-card glass reveal-up" data-category="systems">
+          <div class="project-card-header">
+            <div class="project-icon">📚</div>
+            <div class="project-links">
+              <a href="https://github.com/Fianantsoa/mylibft" target="_blank" rel="noopener noreferrer" aria-label="View mylibft on GitHub">
+                <svg class="icon-github" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+              </a>
+            </div>
+          </div>
+          <h3 class="project-title">mylibft</h3>
+          <p class="project-desc">Custom C library reimplementing standard functions (string, memory, linked lists) as a foundation for future 42 projects.</p>
+          <div class="project-tags">
+            <span class="tag">C</span>
+            <span class="tag">42 School</span>
+            <span class="tag">Low-Level</span>
+          </div>
+        </article>
+
+        <article class="project-card glass reveal-up" data-category="systems">
+          <div class="project-card-header">
+            <div class="project-icon">🖨️</div>
+            <div class="project-links">
+              <a href="https://github.com/Fianantsoa/ft_printf" target="_blank" rel="noopener noreferrer" aria-label="View ft_printf on GitHub">
+                <svg class="icon-github" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+              </a>
+            </div>
+          </div>
+          <h3 class="project-title">ft_printf</h3>
+          <p class="project-desc">Custom reimplementation of the C printf function using variadic arguments — handling format specifiers from scratch.</p>
+          <div class="project-tags">
+            <span class="tag">C</span>
+            <span class="tag">42 School</span>
+            <span class="tag">Variadic</span>
+          </div>
+        </article>
+
+        <article class="project-card glass reveal-up" data-category="systems">
+          <div class="project-card-header">
+            <div class="project-icon">📄</div>
+            <div class="project-links">
+              <a href="https://github.com/Fianantsoa/Get-next-line" target="_blank" rel="noopener noreferrer" aria-label="View Get-next-line on GitHub">
+                <svg class="icon-github" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+              </a>
+            </div>
+          </div>
+          <h3 class="project-title">Get-next-line</h3>
+          <p class="project-desc">Implementation of a function that reads a file line by line — a core 42 curriculum project requiring careful buffer management.</p>
+          <div class="project-tags">
+            <span class="tag">C</span>
+            <span class="tag">42 School</span>
+            <span class="tag">File I/O</span>
+          </div>
+        </article>
+
+        <article class="project-card glass reveal-up" data-category="web">
+          <div class="project-card-header">
+            <div class="project-icon">🚗</div>
+            <div class="project-links">
+              <a href="https://github.com/Fianantsoa/VaikaLocation" target="_blank" rel="noopener noreferrer" aria-label="View VaikaLocation on GitHub">
+                <svg class="icon-github" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+              </a>
+            </div>
+          </div>
+          <h3 class="project-title">VaikaLocation</h3>
+          <p class="project-desc">Online car rental web application built in pure PHP — manages vehicles, bookings, and customers with full backend logic.</p>
+          <div class="project-tags">
+            <span class="tag">PHP</span>
+            <span class="tag">MySQL</span>
+            <span class="tag">Full-Stack</span>
+          </div>
+        </article>
+
+        <article class="project-card glass reveal-up" data-category="web">
+          <div class="project-card-header">
+            <div class="project-icon">🌿</div>
+            <div class="project-links">
+              <a href="https://github.com/Fianantsoa/DetProMada" target="_blank" rel="noopener noreferrer" aria-label="View DetProMada on GitHub">
+                <svg class="icon-github" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+              </a>
+            </div>
+          </div>
+          <h3 class="project-title">DetProMada</h3>
+          <p class="project-desc">A web project centered on Malagasy products and local content, celebrating Madagascar's rich culture through a PHP-powered platform.</p>
+          <div class="project-tags">
+            <span class="tag">PHP</span>
+            <span class="tag">Web</span>
+            <span class="tag">Madagascar</span>
+          </div>
+        </article>
+
+        <article class="project-card glass reveal-up" data-category="data">
+          <div class="project-card-header">
+            <div class="project-icon">🐍</div>
+            <div class="project-links">
+              <a href="https://github.com/Fianantsoa/BetPredict" target="_blank" rel="noopener noreferrer" aria-label="View BetPredict on GitHub">
+                <svg class="icon-github" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+              </a>
+            </div>
+          </div>
+          <h3 class="project-title">BetPredict</h3>
+          <p class="project-desc">Python project for sports betting predictions and data analysis — applying machine learning to real-world statistical datasets.</p>
+          <div class="project-tags">
+            <span class="tag">Python</span>
+            <span class="tag">ML</span>
+            <span class="tag">Data Analysis</span>
+          </div>
+        </article>
+
+        <article class="project-card glass reveal-up featured" data-category="data">
+          <div class="project-card-header">
+            <div class="project-icon">🤖</div>
+            <div class="project-links">
+              <a href="https://github.com/Fianantsoa/Porfolio-By-Agent" target="_blank" rel="noopener noreferrer" aria-label="View Porfolio-By-Agent on GitHub">
+                <svg class="icon-github" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="project-badge">Featured ✨</div>
+          <h3 class="project-title">Portfolio-By-Agent</h3>
+          <p class="project-desc">This very portfolio — a "vibe coding" experiment where an AI agent automatically generated, organized, and designed the entire site.</p>
+          <div class="project-tags">
+            <span class="tag">AI</span>
+            <span class="tag">Automation</span>
+            <span class="tag">Meta</span>
+          </div>
+        </article>
+
+        <article class="project-card glass reveal-up" data-category="systems">
+          <div class="project-card-header">
+            <div class="project-icon">🧮</div>
+            <div class="project-links">
+              <a href="https://github.com/Fianantsoa/calculatrice" target="_blank" rel="noopener noreferrer" aria-label="View calculatrice on GitHub">
+                <svg class="icon-github" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+              </a>
+            </div>
+          </div>
+          <h3 class="project-title">Calculatrice</h3>
+          <p class="project-desc">A calculator application built in C++ applying OOP principles and demonstrating solid command-line interface design.</p>
+          <div class="project-tags">
+            <span class="tag">C++</span>
+            <span class="tag">OOP</span>
+            <span class="tag">CLI</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SKILLS ========== -->
+  <section id="skills" class="section">
+    <div class="container">
+      <h2 class="section-title reveal-up"><span class="accent">//</span> Skills</h2>
+      <div class="skills-grid">
+
+        <div class="skill-group glass reveal-up">
+          <div class="skill-group-header">
+            <span class="skill-group-icon">⚙️</span>
+            <h3>Systems &amp; Low-Level</h3>
+          </div>
+          <div class="skill-items">
+            <div class="skill-item">
+              <span class="skill-name">C</span>
+              <div class="skill-bar"><div class="skill-fill" data-width="88"></div></div>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">C++</span>
+              <div class="skill-bar"><div class="skill-fill" data-width="72"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-group glass reveal-up">
+          <div class="skill-group-header">
+            <span class="skill-group-icon">🌐</span>
+            <h3>Backend &amp; Web</h3>
+          </div>
+          <div class="skill-items">
+            <div class="skill-item">
+              <span class="skill-name">PHP</span>
+              <div class="skill-bar"><div class="skill-fill" data-width="80"></div></div>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Python</span>
+              <div class="skill-bar"><div class="skill-fill" data-width="70"></div></div>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Java</span>
+              <div class="skill-bar"><div class="skill-fill" data-width="60"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-group glass reveal-up">
+          <div class="skill-group-header">
+            <span class="skill-group-icon">🎨</span>
+            <h3>Frontend</h3>
+          </div>
+          <div class="skill-items">
+            <div class="skill-item">
+              <span class="skill-name">HTML5</span>
+              <div class="skill-bar"><div class="skill-fill" data-width="85"></div></div>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">CSS3</span>
+              <div class="skill-bar"><div class="skill-fill" data-width="82"></div></div>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">JavaScript</span>
+              <div class="skill-bar"><div class="skill-fill" data-width="68"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-group glass reveal-up">
+          <div class="skill-group-header">
+            <span class="skill-group-icon">🛠️</span>
+            <h3>Tools &amp; Platforms</h3>
+          </div>
+          <div class="skill-items">
+            <div class="skill-item">
+              <span class="skill-name">Git</span>
+              <div class="skill-bar"><div class="skill-fill" data-width="85"></div></div>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">GitHub</span>
+              <div class="skill-bar"><div class="skill-fill" data-width="88"></div></div>
+            </div>
+            <div class="skill-item">
+              <span class="skill-name">Linux / Shell</span>
+              <div class="skill-bar"><div class="skill-fill" data-width="75"></div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT ========== -->
+  <section id="contact" class="section">
+    <div class="container">
+      <h2 class="section-title reveal-up"><span class="accent">//</span> Get In Touch</h2>
+      <div class="contact-wrapper">
+        <div class="contact-text reveal-left">
+          <p>I'm currently open to new opportunities and collaborations. Whether you have a project idea, want to discuss technology, or just say hello — my inbox is always open.</p>
+          <div class="contact-links">
+            <a href="https://github.com/Fianantsoa" target="_blank" rel="noopener noreferrer" class="contact-link glass">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+              <span>GitHub</span>
+            </a>
+          </div>
+        </div>
+        <form class="contact-form glass reveal-right" id="contact-form" novalidate>
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Your name" required autocomplete="name" />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="your@email.com" required autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" placeholder="Tell me about your project..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">
+            <span class="btn-text">Send Message</span>
+            <span class="btn-icon">→</span>
+          </button>
+          <p class="form-note" id="form-status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer>
+    <div class="container footer-inner">
+      <p class="footer-text">
+        <span class="logo-bracket">&lt;</span>FIA<span class="logo-bracket">/&gt;</span> &nbsp;|&nbsp; Designed &amp; built by Fianantsoa
+      </p>
+      <p class="footer-sub">🤖 This portfolio was generated and organized by an AI agent — a vibe coding experiment.</p>
+    </div>
+  </footer>
+
+  <!-- Libraries (self-hosted) -->
+  <script src="vendor/three.min.js"></script>
+  <script src="vendor/gsap.min.js"></script>
+  <script src="vendor/ScrollTrigger.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
