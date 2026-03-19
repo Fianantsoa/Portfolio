@@ -15,7 +15,7 @@
   <!-- ========== CANVAS (Three.js background) ========== -->
   <canvas id="bg-canvas"></canvas>
 
-  <!-- ========== NAVIGATION ========== -->
+  <!-- ========== NAVIGATION (hidden in desktop OS mode) ========== -->
   <nav id="navbar">
     <div class="nav-inner">
       <a href="#hero" class="nav-logo">
@@ -38,6 +38,42 @@
       <a href="#contact" class="mobile-link">Contact</a>
     </div>
   </nav>
+
+  <!-- ========== DESKTOP OS LAYER ========== -->
+  <div class="desktop-ui">
+    <div class="desktop-icons glass">
+      <div class="desktop-icon" data-window="about">
+        <div class="icon-glyph">👤</div>
+        <span>About</span>
+      </div>
+      <div class="desktop-icon" data-window="projects">
+        <div class="icon-glyph">📂</div>
+        <span>Projects</span>
+      </div>
+      <div class="desktop-icon" data-window="skills">
+        <div class="icon-glyph">🛠️</div>
+        <span>Skills</span>
+      </div>
+      <div class="desktop-icon" data-window="contact">
+        <div class="icon-glyph">✉️</div>
+        <span>Contact</span>
+      </div>
+      <div class="desktop-icon" data-window="resume">
+        <div class="icon-glyph">📄</div>
+        <span>Resume</span>
+      </div>
+    </div>
+
+    <div id="window-area" aria-live="off"></div>
+
+    <div class="taskbar glass" id="taskbar">
+      <div class="taskbar-start">
+        <span class="logo-bracket">&lt;</span>FIA<span class="logo-bracket">/&gt;</span>
+      </div>
+      <div class="taskbar-windows" id="taskbar-windows"></div>
+      <div class="taskbar-clock" id="taskbar-clock"></div>
+    </div>
+  </div>
 
   <!-- ========== HERO ========== -->
   <section id="hero">
@@ -90,7 +126,7 @@ t_dev me = {
   </section>
 
   <!-- ========== ABOUT ========== -->
-  <section id="about" class="section">
+  <section id="about" class="section window-source" data-window="about">
     <div class="container">
       <h2 class="section-title reveal-up"><span class="accent">//</span> About Me</h2>
       <div class="about-grid">
@@ -151,7 +187,7 @@ t_dev me = {
   </section>
 
   <!-- ========== PROJECTS ========== -->
-  <section id="projects" class="section">
+  <section id="projects" class="section window-source" data-window="projects">
     <div class="container">
       <h2 class="section-title reveal-up"><span class="accent">//</span> Projects</h2>
       <div class="project-filters reveal-fade">
@@ -313,7 +349,7 @@ t_dev me = {
   </section>
 
   <!-- ========== SKILLS ========== -->
-  <section id="skills" class="section">
+  <section id="skills" class="section window-source" data-window="skills">
     <div class="container">
       <h2 class="section-title reveal-up"><span class="accent">//</span> Skills</h2>
       <div class="skills-grid">
@@ -403,7 +439,7 @@ t_dev me = {
   </section>
 
   <!-- ========== CONTACT ========== -->
-  <section id="contact" class="section">
+  <section id="contact" class="section window-source" data-window="contact">
     <div class="container">
       <h2 class="section-title reveal-up"><span class="accent">//</span> Get In Touch</h2>
       <div class="contact-wrapper">
@@ -435,6 +471,34 @@ t_dev me = {
           </button>
           <p class="form-note" id="form-status" aria-live="polite"></p>
         </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== RESUME (HIDDEN SOURCE) ========== -->
+  <section id="resume" class="section window-source" data-window="resume">
+    <div class="container">
+      <h2 class="section-title"><span class="accent">//</span> Resume</h2>
+      <div class="resume-grid">
+        <div class="resume-card glass">
+          <h3>Summary</h3>
+          <p>Full-stack developer focused on immersive experiences, systems programming, and building polished developer tools. Passionate about open source, optimization, and resilient UI/UX.</p>
+        </div>
+        <div class="resume-card glass">
+          <h3>Experience</h3>
+          <ul>
+            <li><strong>Freelance Developer</strong> — Crafted bespoke web apps, dashboards, and automation utilities for clients.</li>
+            <li><strong>42 School Projects</strong> — Built low-level C libraries, printf, get_next_line, and systems exercises.</li>
+          </ul>
+        </div>
+        <div class="resume-card glass">
+          <h3>Highlights</h3>
+          <ul>
+            <li>🏆 10+ projects shipped (systems, web, data)</li>
+            <li>🛠️ Languages: C, C++, PHP, JS, Python</li>
+            <li>🌍 Based in Madagascar — open to remote work</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>

@@ -303,44 +303,62 @@
      9. CONTACT FORM (frontend validation only)
   ----------------------------------------------- */
   function initContactForm() {
-    var form   = document.getElementById('contact-form');
-    var status = document.getElementById('form-status');
-    if (!form) return;
+    var forms = document.querySelectorAll('.contact-form');
+    if (!forms.length) return;
 
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      status.className = 'form-note';
+    forms.forEach(function (form) {
+      if (form.dataset.bound === '1') return;
+      form.dataset.bound = '1';
+      var status = form.querySelector('.form-note');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (status) {
+          status.className = 'form-note';
+        }
 
-      var name    = form.name.value.trim();
-      var email   = form.email.value.trim();
-      var message = form.message.value.trim();
+        var name    = form.name.value.trim();
+        var email   = form.email.value.trim();
+        var message = form.message.value.trim();
 
-      if (!name || !email || !message) {
-        status.textContent = '⚠️ Please fill in all fields.';
-        status.className   = 'form-note error';
-        return;
-      }
+        if (!name || !email || !message) {
+          if (status) {
+            status.textContent = '⚠️ Please fill in all fields.';
+            status.className   = 'form-note error';
+          }
+          return;
+        }
 
-      // Basic email validation
-      var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRe.test(email)) {
-        status.textContent = '⚠️ Please enter a valid email address.';
-        status.className   = 'form-note error';
-        return;
-      }
+        // Basic email validation
+        var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRe.test(email)) {
+          if (status) {
+            status.textContent = '⚠️ Please enter a valid email address.';
+            status.className   = 'form-note error';
+          }
+          return;
+        }
 
-      // Simulate send (no backend)
-      var btn = form.querySelector('button[type="submit"]');
-      btn.disabled = true;
-      btn.querySelector('.btn-text').textContent = 'Sending…';
+        // Simulate send (no backend)
+        var btn = form.querySelector('button[type="submit"]');
+        if (btn) {
+          btn.disabled = true;
+          var textEl = btn.querySelector('.btn-text');
+          if (textEl) textEl.textContent = 'Sending…';
+        }
 
-      setTimeout(function () {
-        btn.disabled = false;
-        btn.querySelector('.btn-text').textContent = 'Send Message';
-        status.textContent = '✅ Message sent! I\'ll get back to you soon.';
-        status.className   = 'form-note success';
-        form.reset();
-      }, 1200);
+        setTimeout(function () {
+          if (btn) {
+            btn.disabled = false;
+            var textEl2 = btn.querySelector('.btn-text');
+            if (textEl2) textEl2.textContent = 'Send Message';
+          }
+          if (status) {
+            status.textContent = '✅ Message sent! I\'ll get back to you soon.';
+            status.className   = 'form-note success';
+          }
+          form.reset();
+        }, 1200);
+      });
     });
   }
 
@@ -430,6 +448,240 @@
   }
 
   /* -----------------------------------------------
+     11. DESKTOP OS WINDOWS
+  ----------------------------------------------- */
+  function initDesktopOS() {
+    var icons       = document.querySelectorAll('.desktop-icon');
+    var windowArea  = document.getElementById('window-area');
+    var taskbarWrap = document.getElementById('taskbar-windows');
+    var clockEl     = document.getElementById('taskbar-clock');
+    if (!icons.length || !windowArea || !taskbarWrap) return;
+
+    var contentMap = {};
+    document.querySelectorAll('.window-source').forEach(function (sec) {
+      var key = sec.getAttribute('data-window');
+      if (key) {
+        contentMap[key] = sec.innerHTML;
+      }
+    });
+
+    var titles = {
+      about:    'About',
+      projects: 'Projects',
+      skills:   'Skills',
+      contact:  'Contact',
+      resume:   'Resume',
+    };
+
+    var zCounter = 20;
+    var idCounter = 0;
+    var openWindows = new Map();
+    var taskbarButtons = new Map();
+
+    function updateClock() {
+      if (!clockEl) return;
+      var now = new Date();
+      var h = now.getHours().toString().padStart(2, '0');
+      var m = now.getMinutes().toString().padStart(2, '0');
+      clockEl.textContent = h + ':' + m;
+    }
+    function scheduleClockTick() {
+      updateClock();
+      var now = new Date();
+      var msToNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+      setTimeout(function () {
+        updateClock();
+        setInterval(updateClock, 60000);
+      }, Math.max(msToNextMinute, 1000));
+    }
+    scheduleClockTick();
+
+    function updateBlur() {
+      document.body.classList.toggle('blur-active', openWindows.size > 0);
+    }
+
+    function focusWindow(win) {
+      zCounter += 1;
+      win.style.zIndex = zCounter;
+      taskbarButtons.forEach(function (btn) { btn.classList.remove('active'); });
+      var id = win.dataset.windowId;
+      var btn = taskbarButtons.get(id);
+      if (btn) btn.classList.add('active');
+    }
+
+    function ensureTaskbarItem(id, title, onClick) {
+      if (taskbarButtons.has(id)) return taskbarButtons.get(id);
+      var btn = document.createElement('button');
+      btn.className = 'taskbar-item';
+      btn.textContent = title;
+      btn.addEventListener('click', onClick);
+      taskbarWrap.appendChild(btn);
+      taskbarButtons.set(id, btn);
+      return btn;
+    }
+
+    function closeWindow(id) {
+      var win = openWindows.get(id);
+      if (!win) return;
+      win.remove();
+      openWindows.delete(id);
+      var btn = taskbarButtons.get(id);
+      if (btn) {
+        btn.remove();
+        taskbarButtons.delete(id);
+      }
+      updateBlur();
+    }
+
+    function toggleMinimize(win) {
+      win.classList.toggle('minimized');
+    }
+
+    function makeDraggable(win, handle) {
+      var offsetX = 0, offsetY = 0, dragging = false;
+
+      function onMove(e) {
+        if (!dragging) return;
+        var newX = e.clientX - offsetX;
+        var newY = e.clientY - offsetY;
+        var maxX = window.innerWidth - 120;
+        var maxY = window.innerHeight - 120;
+        win.style.left = Math.min(Math.max(newX, 8), maxX) + 'px';
+        win.style.top  = Math.min(Math.max(newY, 8), maxY) + 'px';
+      }
+
+      function onUp() {
+        dragging = false;
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      }
+
+      handle.addEventListener('mousedown', function (e) {
+        dragging = true;
+        focusWindow(win);
+        offsetX = e.clientX - win.offsetLeft;
+        offsetY = e.clientY - win.offsetTop;
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+    }
+
+    function createWindow(id) {
+      if (!contentMap[id]) return;
+
+      var existing = openWindows.get(id);
+      if (existing) {
+        existing.classList.remove('minimized');
+        focusWindow(existing);
+        updateBlur();
+        return;
+      }
+
+      var win = document.createElement('div');
+      win.className = 'desktop-window resizable';
+      win.dataset.windowId = id;
+      win.style.width = '520px';
+      win.style.height = '420px';
+      win.style.left = (80 + Math.random() * 160) + 'px';
+      win.style.top  = (80 + Math.random() * 120) + 'px';
+      win.style.zIndex = zCounter;
+
+      var header = document.createElement('div');
+      header.className = 'window-header';
+      header.innerHTML = '<span class="window-title">' + (titles[id] || 'Window') + '</span>';
+
+      var actions = document.createElement('div');
+      actions.className = 'window-actions';
+      var btnMin = document.createElement('button');
+      btnMin.className = 'win-btn min';
+      btnMin.innerHTML = '—';
+      var btnClose = document.createElement('button');
+      btnClose.className = 'win-btn close';
+      btnClose.innerHTML = '×';
+      actions.appendChild(btnMin);
+      actions.appendChild(btnClose);
+      header.appendChild(actions);
+
+      var body = document.createElement('div');
+      body.className = 'window-body';
+      body.innerHTML = contentMap[id];
+      body.querySelectorAll('.reveal-up, .reveal-fade, .reveal-left, .reveal-right').forEach(function (el) {
+        el.classList.add('revealed');
+      });
+      // Ensure cloned contact form IDs remain unique and label associations stay intact
+      var clonedForm = body.querySelector('.contact-form');
+      if (clonedForm) {
+        var unique = id + '-' + (++idCounter) + '-' + Date.now();
+        clonedForm.id = 'contact-form-' + unique;
+        var statusEl = clonedForm.querySelector('.form-note');
+        if (statusEl) statusEl.id = 'form-status-' + unique;
+        clonedForm.querySelectorAll('input, textarea').forEach(function (field, idx) {
+          var oldId = field.id;
+          var baseId = oldId || ('field-' + idx);
+          var newId = baseId + '-' + unique;
+          if (oldId) {
+            var lbl = clonedForm.querySelector('label[for="' + oldId + '"]');
+            if (lbl) lbl.setAttribute('for', newId);
+          }
+          field.id = newId;
+        });
+      }
+
+      win.appendChild(header);
+      win.appendChild(body);
+      windowArea.appendChild(win);
+      openWindows.set(id, win);
+      initContactForm(); // bind any forms inside the new window
+
+      var taskBtn = ensureTaskbarItem(id, titles[id] || id, function () {
+        if (!openWindows.has(id)) {
+          createWindow(id);
+          return;
+        }
+        var target = openWindows.get(id);
+        var minimized = target.classList.contains('minimized');
+        if (minimized) {
+          target.classList.remove('minimized');
+          focusWindow(target);
+        } else {
+          toggleMinimize(target);
+        }
+      });
+
+      btnClose.addEventListener('click', function (e) {
+        e.stopPropagation();
+        closeWindow(id);
+      });
+
+      btnMin.addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggleMinimize(win);
+      });
+
+      win.addEventListener('mousedown', function () {
+        focusWindow(win);
+      });
+
+      makeDraggable(win, header);
+      focusWindow(win);
+      updateBlur();
+    }
+
+    icons.forEach(function (icon) {
+      var target = icon.getAttribute('data-window');
+      icon.addEventListener('dblclick', function () {
+        createWindow(target);
+      });
+      // Mobile/touch fallback
+      icon.addEventListener('click', function () {
+        if (window.matchMedia('(pointer: coarse)').matches) {
+          createWindow(target);
+        }
+      });
+    });
+  }
+
+  /* -----------------------------------------------
      INIT ALL
   ----------------------------------------------- */
   function init() {
@@ -443,6 +695,7 @@
     initCardTilt();
     initContactForm();
     initGSAP();
+    initDesktopOS();
   }
 
   if (document.readyState === 'loading') {

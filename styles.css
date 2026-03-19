@@ -178,6 +178,7 @@ strong  { font-weight: 700; color: var(--text); }
   z-index: 100;
   transition: background 0.4s, backdrop-filter 0.4s, border-color 0.4s;
   border-bottom: 1px solid transparent;
+  display: none; /* Desktop OS mode hides main navigation */
 }
 
 #navbar.scrolled {
@@ -346,7 +347,7 @@ strong  { font-weight: 700; color: var(--text); }
 }
 
 .hero-cta {
-  display: flex;
+  display: none; /* Removed hero buttons in desktop OS mode */
   gap: 1rem;
   flex-wrap: wrap;
   margin-bottom: 3rem;
@@ -908,6 +909,225 @@ strong  { font-weight: 700; color: var(--text); }
 .form-note.error   { color: var(--danger);  }
 
 /* =============================================
+   DESKTOP OS LAYER
+   ============================================= */
+.window-source { display: none; } /* hidden originals used as content sources */
+
+.desktop-ui {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  padding: 1.25rem;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.desktop-icons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  max-width: 420px;
+  gap: 0.65rem;
+  align-self: flex-start;
+  padding: 0.85rem;
+  border-radius: 18px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  background: rgba(17, 24, 39, 0.35);
+  pointer-events: auto;
+}
+
+.desktop-icon {
+  text-align: center;
+  padding: 0.6rem 0.5rem;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  color: var(--text);
+  transition: transform 0.2s var(--ease), border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  cursor: default;
+}
+.desktop-icon:hover {
+  border-color: var(--border);
+  background: rgba(255,255,255,0.04);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+}
+.desktop-icon .icon-glyph {
+  font-size: 1.4rem;
+  margin-bottom: 0.35rem;
+}
+.desktop-icon span {
+  font-size: 0.9rem;
+  display: block;
+  color: var(--text-muted);
+}
+
+#window-area {
+  position: relative;
+  flex: 1;
+  pointer-events: none;
+}
+
+.desktop-window {
+  position: absolute;
+  background: rgba(17, 24, 39, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  box-shadow: 0 15px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(108,99,255,0.08);
+  overflow: hidden;
+  min-width: 320px;
+  min-height: 260px;
+  pointer-events: auto;
+  user-select: none;
+  transition: transform 0.25s var(--ease), opacity 0.2s var(--ease);
+}
+
+.desktop-window.minimized {
+  transform: scale(0.96);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.window-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.8rem;
+  background: linear-gradient(135deg, rgba(108,99,255,0.18), rgba(62,207,207,0.12));
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  cursor: grab;
+}
+.window-header:active { cursor: grabbing; }
+
+.window-title {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+}
+
+.window-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.win-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.05);
+  display: grid;
+  place-items: center;
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 0.15s var(--ease), background 0.2s, color 0.2s;
+}
+.win-btn:hover { transform: translateY(-2px); }
+.win-btn.close:hover { background: rgba(255,107,107,0.18); color: var(--danger); }
+.win-btn.min:hover   { background: rgba(108,99,255,0.18); color: var(--accent); }
+
+.window-body {
+  padding: 1.1rem;
+  height: calc(100% - 52px);
+  overflow: auto;
+  user-select: text;
+}
+
+.desktop-window.resizable {
+  resize: both;
+}
+
+.taskbar {
+  margin-top: 1rem;
+  height: 56px;
+  border-radius: 16px;
+  background: rgba(12,16,26,0.8);
+  border: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1rem;
+  pointer-events: auto;
+}
+
+.taskbar-start {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.taskbar-windows {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+  overflow-x: auto;
+}
+
+.taskbar-item {
+  padding: 0.55rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s var(--ease), box-shadow 0.2s var(--ease), transform 0.2s;
+  white-space: nowrap;
+}
+.taskbar-item.active {
+  background: linear-gradient(135deg, rgba(108,99,255,0.22), rgba(62,207,207,0.22));
+  box-shadow: 0 10px 30px var(--accent-glow);
+}
+  .taskbar-item:hover { transform: translateY(-1px); }
+
+  .taskbar-clock {
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    min-width: 68px;
+    text-align: right;
+  }
+
+/* Blur the animated background layer while keeping it running */
+body.blur-active #bg-canvas,
+body.blur-active #hero {
+  filter: blur(9px) brightness(0.9);
+  transition: filter 0.35s var(--ease);
+}
+
+body:not(.blur-active) #bg-canvas,
+body:not(.blur-active) #hero {
+  transition: filter 0.35s var(--ease);
+}
+
+/* Resume cards */
+.resume-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+.resume-card {
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+.resume-card h3 {
+  margin-bottom: 0.5rem;
+}
+.resume-card ul {
+  list-style: disc;
+  margin-left: 1.1rem;
+  color: var(--text-muted);
+}
+
+/* =============================================
    FOOTER
    ============================================= */
 footer {
@@ -970,6 +1190,15 @@ footer {
 @media (max-width: 900px) {
   :root { --section-gap: 5rem; }
 
+  .desktop-ui { padding: 0.85rem; }
+  .desktop-icons {
+    max-width: 100%;
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  }
+  .desktop-window { min-width: 280px; }
+  .taskbar { height: 52px; }
+
   #hero {
     grid-template-columns: 1fr;
     text-align: center;
@@ -1004,6 +1233,9 @@ footer {
 @media (max-width: 600px) {
   .projects-grid { grid-template-columns: 1fr; }
   .skills-grid   { grid-template-columns: 1fr; }
+  .taskbar { height: 50px; }
+  .taskbar-item { padding: 0.5rem 0.75rem; }
+  .desktop-window { min-width: 240px; }
 
   .code-block {
     font-size: 0.75rem;
