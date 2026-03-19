@@ -1,448 +1,933 @@
 /* =============================================
-   script.js — Portfolio interactions & animations
+   script.js — OS-style Portfolio
    ============================================= */
-
 (function () {
   'use strict';
 
-  /* -----------------------------------------------
-     1. THREE.JS PARTICLE BACKGROUND
-  ----------------------------------------------- */
-  function initParticles() {
-    const canvas = document.getElementById('bg-canvas');
-    if (!canvas || typeof THREE === 'undefined') return;
+  var VERSION = 'v2.0';
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  /* ─────────────────────────────────────────
+     DATA — Projects
+  ───────────────────────────────────────── */
+  var PROJECTS = {
+    mylibft: {
+      name: 'mylibft',
+      emoji: '📚',
+      lang: 'C',
+      url: 'https://github.com/Fianantsoa/mylibft',
+      desc: 'Custom C library reimplementing standard functions (string, memory, linked lists) as a foundation for all future 42 projects.',
+      tags: ['C', '42 School', 'Low-Level'],
+      code: '<span class="cc">/* mylibft — custom libc */</span>\n' +
+            '<span class="ck">size_t</span>  <span class="cf">ft_strlen</span>(<span class="ck">const char</span> *s);\n' +
+            '<span class="ck">void</span>   *<span class="cf">ft_memset</span>(<span class="ck">void</span> *b, <span class="ck">int</span> c, <span class="ck">size_t</span> len);\n' +
+            '<span class="ck">char</span>   *<span class="cf">ft_strdup</span>(<span class="ck">const char</span> *s1);\n' +
+            '<span class="ck">t_list</span> *<span class="cf">ft_lstnew</span>(<span class="ck">void</span> *content);'
+    },
+    ft_printf: {
+      name: 'ft_printf',
+      emoji: '🖨️',
+      lang: 'C',
+      url: 'https://github.com/Fianantsoa/ft_printf',
+      desc: 'Custom reimplementation of the C printf function using variadic arguments — handling format specifiers from scratch.',
+      tags: ['C', '42 School', 'Variadic'],
+      code: '<span class="cc">/* ft_printf — variadic printf */</span>\n' +
+            '<span class="ck">int</span> <span class="cf">ft_printf</span>(<span class="ck">const char</span> *fmt, ...);\n' +
+            '<span class="cc">/* Supports: %c %s %p %d %i %u %x %X %% */</span>'
+    },
+    gnl: {
+      name: 'Get-next-line',
+      emoji: '📄',
+      lang: 'C',
+      url: 'https://github.com/Fianantsoa/Get-next-line',
+      desc: 'Implementation of a function that reads a file descriptor line by line — requires careful buffer management and static variables.',
+      tags: ['C', '42 School', 'File I/O'],
+      code: '<span class="cc">/* get_next_line */</span>\n' +
+            '<span class="ck">char</span> *<span class="cf">get_next_line</span>(<span class="ck">int</span> fd);\n' +
+            '<span class="cc">/* Returns next line on each call, NULL at EOF */</span>'
+    },
+    vaika: {
+      name: 'VaikaLocation',
+      emoji: '🚗',
+      lang: 'PHP',
+      url: 'https://github.com/Fianantsoa/VaikaLocation',
+      desc: 'Online car rental web application built in pure PHP — manages vehicles, bookings, and customers with full backend logic.',
+      tags: ['PHP', 'MySQL', 'Full-Stack'],
+      code: '<span class="cc">// VaikaLocation — car rental platform</span>\n' +
+            '<span class="ck">class</span> <span class="cf">Booking</span> {\n' +
+            '  <span class="ck">public</span> <span class="cf">function</span> create($carId, $userId, $dates);\n' +
+            '  <span class="ck">public</span> <span class="cf">function</span> cancel($bookingId);\n' +
+            '}'
+    },
+    detpro: {
+      name: 'DetProMada',
+      emoji: '🌿',
+      lang: 'PHP',
+      url: 'https://github.com/Fianantsoa/DetProMada',
+      desc: 'A web project celebrating Malagasy products and local content — powered by native PHP with no framework.',
+      tags: ['PHP', 'Web', 'Madagascar'],
+      code: '<span class="cc">// DetProMada — Malagasy products platform</span>\n' +
+            '<span class="ck">class</span> <span class="cf">Product</span> {\n' +
+            '  <span class="ck">public</span> $name, $region, $category;\n' +
+            '}'
+    },
+    betpredict: {
+      name: 'BetPredict',
+      emoji: '🐍',
+      lang: 'Python',
+      url: 'https://github.com/Fianantsoa/BetPredict',
+      desc: 'Python project for sports betting predictions and data analysis — applying machine learning to real-world statistical datasets.',
+      tags: ['Python', 'ML', 'Data Analysis'],
+      code: '<span class="cc"># BetPredict — sports prediction ML</span>\n' +
+            '<span class="ck">import</span> pandas <span class="ck">as</span> pd\n' +
+            '<span class="ck">from</span> sklearn.ensemble <span class="ck">import</span> RandomForestClassifier\n' +
+            'model = RandomForestClassifier(n_estimators=<span class="cn">100</span>)'
+    },
+    portfolio: {
+      name: 'Portfolio-By-Agent',
+      emoji: '🤖',
+      lang: 'AI / HTML',
+      url: 'https://github.com/Fianantsoa/Porfolio-By-Agent',
+      desc: 'This very portfolio — a "vibe coding" experiment where an AI agent automatically generated, organised, and designed the entire site.',
+      tags: ['AI', 'Automation', 'Meta'],
+      code: '<span class="cc">// You are looking at this project right now.</span>\n' +
+            '<span class="cc">// Generated by a GitHub Copilot agent. 🤖</span>\n' +
+            'console.<span class="cf">log</span>(<span class="cs">"Hello from the Matrix!"</span>);'
+    },
+    calculatrice: {
+      name: 'Calculatrice',
+      emoji: '🧮',
+      lang: 'C++',
+      url: 'https://github.com/Fianantsoa/calculatrice',
+      desc: 'A calculator application built in C++ applying OOP principles and demonstrating solid command-line interface design.',
+      tags: ['C++', 'OOP', 'CLI'],
+      code: '<span class="cc">// calculatrice — C++ OOP calculator</span>\n' +
+            '<span class="ck">class</span> <span class="cf">Calculator</span> {\n' +
+            '  <span class="ck">double</span> <span class="cf">eval</span>(std::string expr);\n' +
+            '};'
+    }
+  };
+
+  /* ─────────────────────────────────────────
+     STATE
+  ───────────────────────────────────────── */
+  var state = {
+    hackerMode:   false,
+    zCounter:     100,
+    openWindows:  {},          // windowId → { minimised, maximised, prevRect }
+    activeTab:    'mylibft',   // currently shown project tab
+    openTabs:     ['mylibft'], // open tabs list
+    startTime:    Date.now(),
+    termHistory:  [],
+    termHistIdx:  -1
+  };
+
+  /* ─────────────────────────────────────────
+     UTILS
+  ───────────────────────────────────────── */
+  function $(sel, ctx) { return (ctx || document).querySelector(sel); }
+  function $$(sel, ctx){ return Array.from((ctx || document).querySelectorAll(sel)); }
+
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function isMobile() { return window.innerWidth <= 767; }
+
+  /* ─────────────────────────────────────────
+     CLOCK
+  ───────────────────────────────────────── */
+  function updateClock() {
+    var now = new Date();
+    var h = String(now.getHours()).padStart(2,'0');
+    var m = String(now.getMinutes()).padStart(2,'0');
+    var s = String(now.getSeconds()).padStart(2,'0');
+    var t = h + ':' + m + ':' + s;
+
+    var el1 = document.getElementById('desktop-clock');
+    var el2 = document.getElementById('tb-clock');
+    if (el1) el1.textContent = h + ':' + m;
+    if (el2) el2.textContent = t;
+  }
+
+  /* ─────────────────────────────────────────
+     UPTIME (Skills monitor)
+  ───────────────────────────────────────── */
+  function updateUptime() {
+    var el = document.getElementById('sm-uptime');
+    if (!el) return;
+    var sec = Math.floor((Date.now() - state.startTime) / 1000);
+    var d = Math.floor(sec / 86400);
+    var h = Math.floor((sec % 86400) / 3600);
+    var m = Math.floor((sec % 3600)  / 60);
+    el.textContent = 'UPTIME: ' + d + 'd ' + h + 'h ' + m + 'm';
+  }
+
+  /* ─────────────────────────────────────────
+     WINDOW MANAGER
+  ───────────────────────────────────────── */
+  function focusWindow(id) {
+    $$('.os-window').forEach(function (w) { w.classList.remove('focused'); });
+    var win = document.getElementById('win-' + id);
+    if (win) {
+      state.zCounter += 1;
+      win.style.zIndex = state.zCounter;
+      win.classList.add('focused');
+    }
+    updateTaskbar();
+  }
+
+  function openWindow(id) {
+    var win = document.getElementById('win-' + id);
+    if (!win) return;
+    if (!state.openWindows[id]) {
+      state.openWindows[id] = { minimised: false, maximised: false, prevRect: null };
+    }
+    state.openWindows[id].minimised = false;
+    win.classList.add('open');
+    win.classList.remove('minimised');
+    focusWindow(id);
+    updateTaskbar();
+
+    // Trigger skill bars on first open
+    if (id === 'skills') {
+      setTimeout(animateSkillBars, 120);
+      setInterval(updateUptime, 1000);
+    }
+    // Init terminal on first open
+    if (id === 'terminal') {
+      setTimeout(function () {
+        var inp = document.getElementById('term-input');
+        if (inp) inp.focus();
+      }, 200);
+    }
+    // Init projects
+    if (id === 'projects') {
+      renderProject(state.activeTab);
+    }
+  }
+
+  function closeWindow(id) {
+    var win = document.getElementById('win-' + id);
+    if (!win) return;
+    win.classList.remove('open', 'minimised', 'maximised', 'focused');
+    delete state.openWindows[id];
+    updateTaskbar();
+  }
+
+  function minimiseWindow(id) {
+    var win = document.getElementById('win-' + id);
+    if (!win) return;
+    if (state.openWindows[id]) state.openWindows[id].minimised = true;
+    win.classList.add('minimised');
+    win.classList.remove('focused');
+    updateTaskbar();
+  }
+
+  function maximiseWindow(id) {
+    var win = document.getElementById('win-' + id);
+    if (!win) return;
+    var info = state.openWindows[id];
+    if (!info) return;
+
+    if (info.maximised) {
+      // restore
+      var r = info.prevRect;
+      if (r) {
+        win.style.top    = r.top;
+        win.style.left   = r.left;
+        win.style.width  = r.width;
+        win.style.height = r.height;
+      }
+      win.classList.remove('maximised');
+      info.maximised = false;
+    } else {
+      info.prevRect = {
+        top:    win.style.top,
+        left:   win.style.left,
+        width:  win.style.width,
+        height: win.style.height
+      };
+      win.classList.add('maximised');
+      info.maximised = true;
+    }
+  }
+
+  function toggleMinimiseFromTaskbar(id) {
+    var info = state.openWindows[id];
+    if (!info) { openWindow(id); return; }
+    if (info.minimised) {
+      info.minimised = false;
+      var win = document.getElementById('win-' + id);
+      if (win) { win.classList.remove('minimised'); }
+      focusWindow(id);
+    } else {
+      // If already focused, minimise; else focus
+      var win = document.getElementById('win-' + id);
+      if (win && win.classList.contains('focused')) {
+        minimiseWindow(id);
+      } else {
+        focusWindow(id);
+      }
+    }
+    updateTaskbar();
+  }
+
+  /* ─────────────────────────────────────────
+     TASKBAR
+  ───────────────────────────────────────── */
+  var WIN_LABELS = {
+    about:    '👤 About',
+    projects: '📁 Projects',
+    skills:   '⚡ Skills',
+    contact:  '✉️ Contact',
+    terminal: '⌨️ Terminal'
+  };
+
+  function updateTaskbar() {
+    var container = document.getElementById('tb-open-wins');
+    if (!container) return;
+    container.innerHTML = '';
+
+    Object.keys(state.openWindows).forEach(function (id) {
+      var btn = document.createElement('button');
+      btn.className = 'tb-win-btn';
+      btn.textContent = WIN_LABELS[id] || id;
+
+      var win = document.getElementById('win-' + id);
+      if (win && win.classList.contains('focused')) {
+        btn.classList.add('active');
+      }
+
+      btn.addEventListener('click', function () { toggleMinimiseFromTaskbar(id); });
+      container.appendChild(btn);
+    });
+  }
+
+  /* ─────────────────────────────────────────
+     DRAG
+  ───────────────────────────────────────── */
+  function initDrag(win) {
+    var titlebar = win.querySelector('.win-titlebar');
+    if (!titlebar) return;
+
+    var dragging = false, ox = 0, oy = 0;
+    var id = win.id.replace('win-', '');
+
+    titlebar.addEventListener('mousedown', function (e) {
+      if (e.target.classList.contains('dot')) return;
+      dragging = true;
+      ox = e.clientX - win.offsetLeft;
+      oy = e.clientY - win.offsetTop;
+      focusWindow(id);
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', function (e) {
+      if (!dragging) return;
+      var info = state.openWindows[id];
+      if (info && info.maximised) return;
+      var desktop = document.getElementById('desktop');
+      if (!desktop) return;
+      var maxX = desktop.offsetWidth  - win.offsetWidth;
+      var maxY = desktop.offsetHeight - 36;
+      win.style.left = clamp(e.clientX - ox, 0, Math.max(0, maxX)) + 'px';
+      win.style.top  = clamp(e.clientY - oy, 0, Math.max(0, maxY)) + 'px';
+    });
+
+    document.addEventListener('mouseup', function () { dragging = false; });
+  }
+
+  /* ─────────────────────────────────────────
+     RESIZE
+  ───────────────────────────────────────── */
+  function initResize(win) {
+    var handle = win.querySelector('.win-resize-handle');
+    if (!handle) return;
+
+    var resizing = false, startX, startY, startW, startH;
+    var id = win.id.replace('win-', '');
+
+    handle.addEventListener('mousedown', function (e) {
+      var info = state.openWindows[id];
+      if (info && info.maximised) return;
+      resizing = true;
+      startX = e.clientX; startY = e.clientY;
+      startW = win.offsetWidth; startH = win.offsetHeight;
+      focusWindow(id);
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    document.addEventListener('mousemove', function (e) {
+      if (!resizing) return;
+      var w = Math.max(280, startW + (e.clientX - startX));
+      var h = Math.max(180, startH + (e.clientY - startY));
+      win.style.width  = w + 'px';
+      win.style.height = h + 'px';
+    });
+
+    document.addEventListener('mouseup', function () { resizing = false; });
+  }
+
+  /* ─────────────────────────────────────────
+     TITLE BAR DOTS
+  ───────────────────────────────────────── */
+  function initWindowButtons() {
+    $$('.win-titlebar').forEach(function (bar) {
+      var id = bar.getAttribute('data-window');
+      bar.querySelectorAll('.dot').forEach(function (dot) {
+        dot.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var action = dot.getAttribute('data-action');
+          if (action === 'close')    closeWindow(id);
+          if (action === 'minimize') minimiseWindow(id);
+          if (action === 'maximize') maximiseWindow(id);
+        });
+      });
+    });
+  }
+
+  /* ─────────────────────────────────────────
+     DESKTOP ICONS — double-click to open
+  ───────────────────────────────────────── */
+  function initDesktopIcons() {
+    var lastClick = {};
+
+    $$('.desktop-icon').forEach(function (icon) {
+      var winId = icon.getAttribute('data-window');
+
+      icon.addEventListener('click', function () {
+        // single click → select
+        $$('.desktop-icon').forEach(function (i) { i.classList.remove('sel'); });
+        icon.classList.add('sel');
+
+        // double-click detection
+        var now = Date.now();
+        if (lastClick[winId] && (now - lastClick[winId]) < 400) {
+          openWindow(winId);
+          icon.classList.remove('sel');
+        }
+        lastClick[winId] = now;
+      });
+
+      // Keyboard
+      icon.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { openWindow(winId); e.preventDefault(); }
+      });
+    });
+
+    // Clicking elsewhere deselects icons
+    document.getElementById('desktop').addEventListener('click', function (e) {
+      if (!e.target.closest('.desktop-icon') && !e.target.closest('.os-window') && !e.target.closest('#taskbar')) {
+        $$('.desktop-icon').forEach(function (i) { i.classList.remove('sel'); });
+      }
+    });
+  }
+
+  /* ─────────────────────────────────────────
+     TASKBAR LOGO → open About
+  ───────────────────────────────────────── */
+  function initTaskbarLogo() {
+    var logo = document.getElementById('tb-logo');
+    if (logo) logo.addEventListener('click', function () { openWindow('about'); });
+  }
+
+  /* ─────────────────────────────────────────
+     MODE TOGGLE
+  ───────────────────────────────────────── */
+  function setMode(hacker) {
+    state.hackerMode = hacker;
+    if (hacker) {
+      document.body.classList.add('hacker');
+    } else {
+      document.body.classList.remove('hacker');
+    }
+    var label = document.getElementById('mode-label');
+    var btn   = document.getElementById('mode-btn');
+    var mobBtn = document.getElementById('mode-btn-mob');
+    if (label) label.textContent = hacker ? 'Recruiter Mode' : 'Hacker Mode';
+    if (btn)   btn.setAttribute('aria-pressed', String(hacker));
+    if (mobBtn) {
+      mobBtn.textContent = hacker ? '☀️ Recruiter' : '🕶️ Hacker';
+      mobBtn.setAttribute('aria-pressed', String(hacker));
+    }
+    // Restart particles with new mode colours
+    if (!isMobile()) initParticles();
+  }
+
+  function initModeToggle() {
+    var btn    = document.getElementById('mode-btn');
+    var mobBtn = document.getElementById('mode-btn-mob');
+    if (btn)    btn.addEventListener('click',    function () { setMode(!state.hackerMode); });
+    if (mobBtn) mobBtn.addEventListener('click', function () { setMode(!state.hackerMode); });
+  }
+
+  /* ─────────────────────────────────────────
+     PROJECTS — VSCode tabs
+  ───────────────────────────────────────── */
+  function renderProject(tabId) {
+    var proj = PROJECTS[tabId];
+    if (!proj) return;
+
+    var codeEl = document.getElementById('vsc-code');
+    if (!codeEl) return;
+
+    codeEl.innerHTML =
+      '<div class="proj-card">' +
+        '<div class="proj-card-top">' +
+          '<span class="proj-name">' + proj.emoji + ' ' + proj.name + '</span>' +
+          '<span class="proj-lang">' + proj.lang + '</span>' +
+        '</div>' +
+        '<p class="proj-desc">' + proj.desc + '</p>' +
+        '<div class="proj-tags">' +
+          proj.tags.map(function (t) { return '<span class="proj-tag">' + t + '</span>'; }).join('') +
+        '</div>' +
+        '<pre class="proj-code">' + proj.code + '</pre>' +
+        '<a class="proj-gh" href="' + proj.url + '" target="_blank" rel="noopener noreferrer">' +
+          '🐱 View on GitHub' +
+        '</a>' +
+      '</div>';
+  }
+
+  function addVscTab(tabId) {
+    if (state.openTabs.indexOf(tabId) === -1) {
+      state.openTabs.push(tabId);
+    }
+    renderVscTabs();
+  }
+
+  function removeVscTab(tabId) {
+    state.openTabs = state.openTabs.filter(function (t) { return t !== tabId; });
+    if (state.activeTab === tabId) {
+      state.activeTab = state.openTabs[state.openTabs.length - 1] || 'mylibft';
+      if (state.openTabs.length === 0) state.openTabs = [state.activeTab];
+    }
+    renderVscTabs();
+    renderProject(state.activeTab);
+  }
+
+  function renderVscTabs() {
+    var container = document.getElementById('vsc-tabs');
+    if (!container) return;
+    container.innerHTML = '';
+
+    state.openTabs.forEach(function (tabId) {
+      var proj = PROJECTS[tabId];
+      if (!proj) return;
+      var tab = document.createElement('div');
+      tab.className = 'vsc-tab' + (tabId === state.activeTab ? ' active' : '');
+      tab.setAttribute('role', 'tab');
+      tab.setAttribute('aria-selected', tabId === state.activeTab ? 'true' : 'false');
+      tab.setAttribute('tabindex', tabId === state.activeTab ? '0' : '-1');
+      tab.innerHTML = proj.emoji + ' ' + proj.name + ' <span class="tab-x" aria-label="Close tab">×</span>';
+
+      tab.addEventListener('click', function (e) {
+        if (e.target.classList.contains('tab-x')) {
+          e.stopPropagation();
+          removeVscTab(tabId);
+          return;
+        }
+        state.activeTab = tabId;
+        renderVscTabs();
+        renderProject(tabId);
+        // Sync sidebar
+        $$('.vsc-item').forEach(function (li) {
+          li.classList.toggle('active', li.getAttribute('data-tab') === tabId);
+        });
+      });
+
+      container.appendChild(tab);
+    });
+  }
+
+  function initVscSidebar() {
+    $$('.vsc-item').forEach(function (item) {
+      item.addEventListener('click', function () {
+        var tabId = item.getAttribute('data-tab');
+        if (!tabId) return;
+        state.activeTab = tabId;
+        addVscTab(tabId);
+        renderProject(tabId);
+        $$('.vsc-item').forEach(function (li) { li.classList.remove('active'); });
+        item.classList.add('active');
+      });
+    });
+    // Initial render
+    renderVscTabs();
+    renderProject(state.activeTab);
+  }
+
+  /* ─────────────────────────────────────────
+     SKILL BARS ANIMATION
+  ───────────────────────────────────────── */
+  function animateSkillBars() {
+    $$('.sm-fill').forEach(function (fill) {
+      var pct = fill.getAttribute('data-pct') || '0';
+      fill.style.width = pct + '%';
+    });
+  }
+
+  /* ─────────────────────────────────────────
+     CONTACT FORM
+  ───────────────────────────────────────── */
+  function initContactForm() {
+    var forms = [
+      { form: 'contact-form', status: 'form-status' },
+      { form: 'mob-contact-form', status: 'mob-form-status' }
+    ];
+
+    forms.forEach(function (cfg) {
+      var form   = document.getElementById(cfg.form);
+      var status = document.getElementById(cfg.status);
+      if (!form || !status) return;
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        status.className = 'form-status';
+
+        var name    = (form.name    ? form.name.value.trim()    : '');
+        var email   = (form.email   ? form.email.value.trim()   : '');
+        var message = (form.message ? form.message.value.trim() : '');
+
+        if (!name || !email || !message) {
+          status.textContent = '⚠️ Please fill in all fields.';
+          status.className   = 'form-status err';
+          return;
+        }
+        var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!re.test(email)) {
+          status.textContent = '⚠️ Enter a valid email address.';
+          status.className   = 'form-status err';
+          return;
+        }
+
+        var btn = form.querySelector('button[type="submit"]');
+        if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+
+        setTimeout(function () {
+          if (btn) { btn.disabled = false; btn.textContent = 'Send Message'; }
+          status.textContent = '✅ Message sent! I\'ll get back to you soon.';
+          status.className   = 'form-status ok';
+          form.reset();
+        }, 1200);
+      });
+    });
+  }
+
+  /* ─────────────────────────────────────────
+     TERMINAL
+  ───────────────────────────────────────── */
+  function termPrint(html, cls) {
+    var out = document.getElementById('term-output');
+    if (!out) return;
+    var line = document.createElement('div');
+    line.className = 't-line' + (cls ? ' ' + cls : '');
+    line.innerHTML = html;
+    out.appendChild(line);
+    out.scrollTop = out.scrollHeight;
+  }
+
+  function termClear() {
+    var out = document.getElementById('term-output');
+    if (out) out.innerHTML = '';
+  }
+
+  function processCommand(raw) {
+    var cmd  = raw.trim();
+    var parts = cmd.split(/\s+/);
+    var base  = parts[0].toLowerCase();
+
+    // Print the command line
+    termPrint(
+      '<span class="t-prompt">fia@desktop:~$</span> <span>' + escHtml(cmd) + '</span>',
+      't-prompt-line'
+    );
+
+    if (!cmd) return;
+
+    state.termHistory.unshift(cmd);
+    state.termHistIdx = -1;
+
+    switch (base) {
+      case 'help':
+        termPrint('<span class="t-accent">Available commands:</span>', 't-out');
+        termPrint('  <span class="t-accent">whoami</span>          — about me', 't-out');
+        termPrint('  <span class="t-accent">ls</span>              — list projects', 't-out');
+        termPrint('  <span class="t-accent">open &lt;section&gt;</span>  — open a window (about|projects|skills|contact|terminal)', 't-out');
+        termPrint('  <span class="t-accent">close &lt;section&gt;</span> — close a window', 't-out');
+        termPrint('  <span class="t-accent">skills</span>          — show skill summary', 't-out');
+        termPrint('  <span class="t-accent">contact --copy</span>  — copy GitHub URL', 't-out');
+        termPrint('  <span class="t-accent">mode recruiter</span>  — switch to Recruiter mode', 't-out');
+        termPrint('  <span class="t-accent">mode hacker</span>     — switch to Hacker mode', 't-out');
+        termPrint('  <span class="t-accent">date</span>            — show current date', 't-out');
+        termPrint('  <span class="t-accent">pwd</span>             — print working directory', 't-out');
+        termPrint('  <span class="t-accent">clear</span>           — clear terminal', 't-out');
+        break;
+
+      case 'whoami':
+        termPrint('Fianantsoa', 't-out');
+        termPrint('Full-Stack Developer &amp; Systems Programmer', 't-out');
+        termPrint('📍 Madagascar 🇲🇬  |  🎓 42 School  |  🟢 Open to Work', 't-out');
+        termPrint('GitHub: <a style="color:var(--accent)" href="https://github.com/Fianantsoa" target="_blank">github.com/Fianantsoa</a>', 't-out');
+        break;
+
+      case 'ls':
+      case 'ls projects':
+        termPrint('<span class="t-accent">~/projects</span>', 't-out');
+        Object.keys(PROJECTS).forEach(function (k) {
+          var p = PROJECTS[k];
+          termPrint('  ' + p.emoji + '  <span class="t-accent">' + p.name + '</span>  <span class="t-muted">(' + p.lang + ')</span>', 't-out');
+        });
+        break;
+
+      case 'open':
+        var target = (parts[1] || '').toLowerCase();
+        var valid  = ['about','projects','skills','contact','terminal'];
+        if (!target) {
+          termPrint('Usage: open &lt;section&gt;', 't-err');
+        } else if (valid.indexOf(target) === -1) {
+          termPrint('Unknown section: ' + escHtml(target) + '.  Try: ' + valid.join(', '), 't-err');
+        } else {
+          openWindow(target);
+          termPrint('Opening ' + target + '...', 't-out');
+        }
+        break;
+
+      case 'close':
+        var closeTarget = (parts[1] || '').toLowerCase();
+        if (!closeTarget) { termPrint('Usage: close &lt;section&gt;', 't-err'); break; }
+        closeWindow(closeTarget);
+        termPrint('Closed ' + escHtml(closeTarget), 't-out');
+        break;
+
+      case 'skills':
+        termPrint('<span class="t-accent">SKILL PROFILER</span>', 't-out');
+        var skillData = [
+          ['C',          88], ['C++',        72], ['PHP',        80],
+          ['Python',     70], ['HTML/CSS',   85], ['JavaScript', 68],
+          ['Java',       60], ['Git/Shell',  85]
+        ];
+        skillData.forEach(function (s) {
+          var bar = '█'.repeat(Math.round(s[1] / 5)) + '░'.repeat(20 - Math.round(s[1] / 5));
+          termPrint(
+            '  <span style="display:inline-block;width:80px">' + s[0] + '</span>' +
+            '<span class="t-accent">' + bar + '</span>' +
+            '  <span class="t-muted">' + s[1] + '%</span>',
+            't-out'
+          );
+        });
+        break;
+
+      case 'contact':
+        if (parts[1] === '--copy') {
+          var url = 'https://github.com/Fianantsoa';
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(url).then(function () {
+              termPrint('✅ Copied to clipboard: ' + url, 't-out');
+            }).catch(function () {
+              termPrint('GitHub: ' + url, 't-out');
+            });
+          } else {
+            termPrint('GitHub: ' + url, 't-out');
+          }
+        } else {
+          termPrint('Usage: contact --copy', 't-out');
+        }
+        break;
+
+      case 'mode':
+        var m = (parts[1] || '').toLowerCase();
+        if (m === 'hacker')    { setMode(true);  termPrint('🕶️  Hacker mode activated.', 't-out'); }
+        else if (m === 'recruiter') { setMode(false); termPrint('☀️  Recruiter mode activated.', 't-out'); }
+        else { termPrint('Usage: mode recruiter | mode hacker', 't-err'); }
+        break;
+
+      case 'date':
+        termPrint(new Date().toString(), 't-out');
+        break;
+
+      case 'pwd':
+        termPrint('/home/fia/portfolio', 't-out');
+        break;
+
+      case 'clear':
+        termClear();
+        break;
+
+      default:
+        termPrint(escHtml(base) + ': command not found. Type <span class="t-accent">help</span> for help.', 't-err');
+    }
+    termPrint('&nbsp;');
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;');
+  }
+
+  function initTerminal() {
+    // Print welcome message
+    termPrint('Fianantsoa OS — Portfolio ' + VERSION, 't-welcome');
+    termPrint('Type <span class="t-accent">help</span> for available commands.', 't-muted');
+    termPrint('&nbsp;');
+
+    var inp = document.getElementById('term-input');
+    if (!inp) return;
+
+    inp.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        processCommand(inp.value);
+        inp.value = '';
+        state.termHistIdx = -1;
+      } else if (e.key === 'ArrowUp') {
+        state.termHistIdx = Math.min(state.termHistIdx + 1, state.termHistory.length - 1);
+        inp.value = state.termHistory[state.termHistIdx] || '';
+        e.preventDefault();
+      } else if (e.key === 'ArrowDown') {
+        state.termHistIdx = Math.max(state.termHistIdx - 1, -1);
+        inp.value = state.termHistIdx === -1 ? '' : (state.termHistory[state.termHistIdx] || '');
+        e.preventDefault();
+      }
+    });
+
+    // Click terminal body → focus input
+    var body = document.getElementById('win-terminal');
+    if (body) {
+      body.addEventListener('click', function (e) {
+        if (!e.target.closest('a')) inp.focus();
+      });
+    }
+  }
+
+  /* ─────────────────────────────────────────
+     THREE.JS PARTICLE BACKGROUND
+  ───────────────────────────────────────── */
+  var particleAnimId = null;
+
+  function initParticles() {
+    var canvas = document.getElementById('bg-canvas');
+    if (!canvas || typeof THREE === 'undefined') return;
+    if (isMobile()) { canvas.style.display = 'none'; return; }
+    canvas.style.display = '';
+
+    // Cancel previous animation
+    if (particleAnimId) { cancelAnimationFrame(particleAnimId); particleAnimId = null; }
+
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0);
 
-    const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    var scene  = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 4;
 
-    // Particle geometry
-    const COUNT    = 1800;
-    const positions = new Float32Array(COUNT * 3);
-    const colors    = new Float32Array(COUNT * 3);
+    var COUNT = 1600;
+    var positions = new Float32Array(COUNT * 3);
+    var colors    = new Float32Array(COUNT * 3);
 
-    const palette = [
-      new THREE.Color('#6c63ff'),
-      new THREE.Color('#3ecfcf'),
-      new THREE.Color('#8b7cf8'),
-      new THREE.Color('#ffffff'),
-    ];
+    var palette = state.hackerMode
+      ? [new THREE.Color('#00ff46'), new THREE.Color('#00aa30'), new THREE.Color('#003310')]
+      : [new THREE.Color('#6c63ff'), new THREE.Color('#3ecfcf'), new THREE.Color('#8b7cf8'), new THREE.Color('#ffffff')];
 
-    for (let i = 0; i < COUNT; i++) {
-      const i3 = i * 3;
+    for (var i = 0; i < COUNT; i++) {
+      var i3 = i * 3;
       positions[i3]     = (Math.random() - 0.5) * 14;
       positions[i3 + 1] = (Math.random() - 0.5) * 14;
       positions[i3 + 2] = (Math.random() - 0.5) * 8;
-
-      const col = palette[Math.floor(Math.random() * palette.length)];
-      colors[i3]     = col.r;
-      colors[i3 + 1] = col.g;
-      colors[i3 + 2] = col.b;
+      var col = palette[Math.floor(Math.random() * palette.length)];
+      colors[i3] = col.r; colors[i3+1] = col.g; colors[i3+2] = col.b;
     }
 
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color',    new THREE.BufferAttribute(colors,    3));
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('color',    new THREE.BufferAttribute(colors,    3));
 
-    const material = new THREE.PointsMaterial({
-      size:           0.04,
-      vertexColors:   true,
-      transparent:    true,
-      opacity:        0.55,
-      sizeAttenuation: true,
-      depthWrite:     false,
+    var mat = new THREE.PointsMaterial({
+      size: 0.04, vertexColors: true, transparent: true,
+      opacity: 0.5, sizeAttenuation: true, depthWrite: false
     });
 
-    const particles = new THREE.Points(geometry, material);
-    scene.add(particles);
+    var pts = new THREE.Points(geo, mat);
+    scene.add(pts);
 
-    // Mouse parallax
-    let mouseX = 0, mouseY = 0;
+    var mouseX = 0, mouseY = 0;
     document.addEventListener('mousemove', function (e) {
       mouseX = (e.clientX / window.innerWidth  - 0.5) * 0.5;
       mouseY = (e.clientY / window.innerHeight - 0.5) * 0.5;
     });
 
-    // Resize
     window.addEventListener('resize', function () {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // Animation loop
-    let t = 0;
+    var t = 0;
     function animate() {
-      requestAnimationFrame(animate);
+      particleAnimId = requestAnimationFrame(animate);
       t += 0.001;
-      particles.rotation.y = t * 0.04  + mouseX * 0.3;
-      particles.rotation.x = t * 0.02  - mouseY * 0.2;
+      pts.rotation.y = t * 0.04 + mouseX * 0.3;
+      pts.rotation.x = t * 0.02 - mouseY * 0.2;
       renderer.render(scene, camera);
     }
-
     animate();
   }
 
-  /* -----------------------------------------------
-     2. NAVBAR scroll effect & active link
-  ----------------------------------------------- */
-  function initNavbar() {
-    var navbar = document.getElementById('navbar');
-    var links  = document.querySelectorAll('.nav-links a');
+  /* ─────────────────────────────────────────
+     WINDOW FOCUS ON CLICK
+  ───────────────────────────────────────── */
+  function initWindowFocusOnClick() {
+    $$('.os-window').forEach(function (win) {
+      var id = win.id.replace('win-', '');
+      win.addEventListener('mousedown', function () { focusWindow(id); });
+    });
+  }
 
-    window.addEventListener('scroll', function () {
-      if (window.scrollY > 60) {
-        navbar.classList.add('scrolled');
+  /* ─────────────────────────────────────────
+     MOBILE: show #mobile-layout, hide desktop
+  ───────────────────────────────────────── */
+  function initResponsive() {
+    var mob = document.getElementById('mobile-layout');
+    if (!mob) return;
+    if (isMobile()) {
+      mob.hidden = false;
+    } else {
+      mob.hidden = true;
+    }
+    window.addEventListener('resize', function () {
+      if (isMobile()) {
+        mob.hidden = false;
       } else {
-        navbar.classList.remove('scrolled');
-      }
-      updateActiveLink();
-    }, { passive: true });
-
-    function updateActiveLink() {
-      var sections = document.querySelectorAll('section[id]');
-      var scrollPos = window.scrollY + 120;
-
-      sections.forEach(function (sec) {
-        if (scrollPos >= sec.offsetTop && scrollPos < sec.offsetTop + sec.offsetHeight) {
-          links.forEach(function (a) {
-            a.classList.remove('active');
-            if (a.getAttribute('href') === '#' + sec.id) {
-              a.classList.add('active');
-            }
-          });
-        }
-      });
-    }
-  }
-
-  /* -----------------------------------------------
-     3. HAMBURGER MENU
-  ----------------------------------------------- */
-  function initHamburger() {
-    var btn   = document.getElementById('hamburger');
-    var menu  = document.getElementById('mobile-menu');
-    var links = menu.querySelectorAll('.mobile-link');
-
-    function close() {
-      btn.classList.remove('open');
-      menu.classList.remove('open');
-    }
-
-    btn.addEventListener('click', function () {
-      btn.classList.toggle('open');
-      menu.classList.toggle('open');
-    });
-
-    links.forEach(function (link) {
-      link.addEventListener('click', close);
-    });
-
-    // Close on outside click
-    document.addEventListener('click', function (e) {
-      if (!btn.contains(e.target) && !menu.contains(e.target)) {
-        close();
+        mob.hidden = true;
       }
     });
   }
 
-  /* -----------------------------------------------
-     4. TYPEWRITER
-  ----------------------------------------------- */
-  function initTypewriter() {
-    var el = document.getElementById('typewriter-text');
-    if (!el) return;
-
-    var phrases = [
-      'Full-Stack Developer',
-      'Systems Programmer',
-      '42 School Student',
-      'Open Source Enthusiast',
-      'Problem Solver',
-    ];
-
-    var phraseIndex = 0;
-    var charIndex   = 0;
-    var deleting    = false;
-    var pausing     = false;
-
-    function tick() {
-      var phrase = phrases[phraseIndex];
-
-      if (pausing) {
-        pausing = false;
-        setTimeout(tick, deleting ? 50 : 1800);
-        return;
-      }
-
-      if (!deleting) {
-        el.textContent = phrase.slice(0, ++charIndex);
-        if (charIndex === phrase.length) {
-          deleting = true;
-          pausing  = true;
-        }
-      } else {
-        el.textContent = phrase.slice(0, --charIndex);
-        if (charIndex === 0) {
-          deleting = false;
-          phraseIndex = (phraseIndex + 1) % phrases.length;
-        }
-      }
-
-      var speed = deleting ? 35 : 70;
-      setTimeout(tick, speed);
-    }
-
-    setTimeout(tick, 600);
-  }
-
-  /* -----------------------------------------------
-     5. SCROLL REVEAL (IntersectionObserver)
-  ----------------------------------------------- */
-  function initScrollReveal() {
-    var els = document.querySelectorAll('.reveal-up, .reveal-fade, .reveal-left, .reveal-right');
-    if (!els.length) return;
-
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          // Stagger siblings in a grid
-          var parent = entry.target.parentElement;
-          var siblings = Array.from(parent.querySelectorAll('.reveal-up, .reveal-fade'));
-          var idx = siblings.indexOf(entry.target);
-          var delay = idx >= 0 ? idx * 80 : 0;
-
-          setTimeout(function () {
-            entry.target.classList.add('revealed');
-          }, delay);
-
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
-
-    els.forEach(function (el) { observer.observe(el); });
-  }
-
-  /* -----------------------------------------------
-     6. SKILL BARS animation
-  ----------------------------------------------- */
-  function initSkillBars() {
-    var bars = document.querySelectorAll('.skill-fill');
-    if (!bars.length) return;
-
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          var bar   = entry.target;
-          var width = bar.getAttribute('data-width') || '0';
-          bar.style.width = width + '%';
-          observer.unobserve(bar);
-        }
-      });
-    }, { threshold: 0.3 });
-
-    bars.forEach(function (bar) { observer.observe(bar); });
-  }
-
-  /* -----------------------------------------------
-     7. PROJECT FILTERS
-  ----------------------------------------------- */
-  function initProjectFilters() {
-    var buttons = document.querySelectorAll('.filter-btn');
-    var cards   = document.querySelectorAll('.project-card');
-
-    buttons.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        buttons.forEach(function (b) { b.classList.remove('active'); });
-        btn.classList.add('active');
-
-        var filter = btn.getAttribute('data-filter');
-
-        cards.forEach(function (card) {
-          var cat = card.getAttribute('data-category');
-          if (filter === 'all' || cat === filter) {
-            card.classList.remove('hidden');
-          } else {
-            card.classList.add('hidden');
-          }
-        });
-      });
-    });
-  }
-
-  /* -----------------------------------------------
-     8. CODE CARD 3D tilt on mousemove
-  ----------------------------------------------- */
-  function initCardTilt() {
-    var card = document.querySelector('.code-card');
-    if (!card) return;
-
-    var MAX = 12;
-
-    card.addEventListener('mousemove', function (e) {
-      var rect = card.getBoundingClientRect();
-      var cx   = rect.left + rect.width  / 2;
-      var cy   = rect.top  + rect.height / 2;
-      var dx   = (e.clientX - cx) / (rect.width  / 2);
-      var dy   = (e.clientY - cy) / (rect.height / 2);
-      card.style.transform = 'perspective(800px) rotateY(' + (dx * MAX) + 'deg) rotateX(' + (-dy * MAX) + 'deg) scale(1.03)';
-    });
-
-    card.addEventListener('mouseleave', function () {
-      card.style.transform = 'perspective(800px) rotateY(-6deg) rotateX(3deg)';
-    });
-  }
-
-  /* -----------------------------------------------
-     9. CONTACT FORM (frontend validation only)
-  ----------------------------------------------- */
-  function initContactForm() {
-    var form   = document.getElementById('contact-form');
-    var status = document.getElementById('form-status');
-    if (!form) return;
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      status.className = 'form-note';
-
-      var name    = form.name.value.trim();
-      var email   = form.email.value.trim();
-      var message = form.message.value.trim();
-
-      if (!name || !email || !message) {
-        status.textContent = '⚠️ Please fill in all fields.';
-        status.className   = 'form-note error';
-        return;
-      }
-
-      // Basic email validation
-      var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRe.test(email)) {
-        status.textContent = '⚠️ Please enter a valid email address.';
-        status.className   = 'form-note error';
-        return;
-      }
-
-      // Simulate send (no backend)
-      var btn = form.querySelector('button[type="submit"]');
-      btn.disabled = true;
-      btn.querySelector('.btn-text').textContent = 'Sending…';
-
-      setTimeout(function () {
-        btn.disabled = false;
-        btn.querySelector('.btn-text').textContent = 'Send Message';
-        status.textContent = '✅ Message sent! I\'ll get back to you soon.';
-        status.className   = 'form-note success';
-        form.reset();
-      }, 1200);
-    });
-  }
-
-  /* -----------------------------------------------
-     10. GSAP enhanced animations (if available)
-  ----------------------------------------------- */
-  function initGSAP() {
-    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Hero entrance
-    gsap.from('.hero-name', {
-      duration: 1.2,
-      y: 60,
-      opacity: 0,
-      ease: 'power4.out',
-      delay: 0.2,
-    });
-
-    gsap.from('.hero-greeting', {
-      duration: 1,
-      x: -30,
-      opacity: 0,
-      ease: 'power3.out',
-      delay: 0.1,
-    });
-
-    gsap.from('.hero-typewriter', {
-      duration: 0.8,
-      opacity: 0,
-      ease: 'power2.out',
-      delay: 0.6,
-    });
-
-    gsap.from('.hero-sub', {
-      duration: 1,
-      y: 20,
-      opacity: 0,
-      ease: 'power3.out',
-      delay: 0.8,
-    });
-
-    gsap.from('.hero-cta .btn', {
-      duration: 0.8,
-      y: 20,
-      opacity: 0,
-      stagger: 0.15,
-      ease: 'power3.out',
-      delay: 1,
-    });
-
-    gsap.from('.code-card', {
-      duration: 1.4,
-      x: 80,
-      opacity: 0,
-      ease: 'power4.out',
-      delay: 0.4,
-    });
-
-    // Scroll-based parallax on orbs
-    var orbs = document.querySelectorAll('.orb');
-    orbs.forEach(function (orb, i) {
-      var dir = i % 2 === 0 ? -60 : 60;
-      gsap.to(orb, {
-        y: dir,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '#hero',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1.5,
-        },
-      });
-    });
-
-    // Section titles
-    document.querySelectorAll('.section-title').forEach(function (title) {
-      gsap.from(title, {
-        scrollTrigger: { trigger: title, start: 'top 85%' },
-        duration: 1,
-        x: -30,
-        opacity: 0,
-        ease: 'power3.out',
-      });
-    });
-  }
-
-  /* -----------------------------------------------
-     INIT ALL
-  ----------------------------------------------- */
+  /* ─────────────────────────────────────────
+     INIT
+  ───────────────────────────────────────── */
   function init() {
-    initParticles();
-    initNavbar();
-    initHamburger();
-    initTypewriter();
-    initScrollReveal();
-    initSkillBars();
-    initProjectFilters();
-    initCardTilt();
+    initResponsive();
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    if (!isMobile()) {
+      initParticles();
+      initDesktopIcons();
+      initWindowButtons();
+      $$('.os-window').forEach(function (win) { initDrag(win); initResize(win); });
+      initWindowFocusOnClick();
+      initVscSidebar();
+      initTerminal();
+      initTaskbarLogo();
+      initModeToggle();
+      updateTaskbar();
+    } else {
+      initModeToggle();
+    }
+
     initContactForm();
-    initGSAP();
   }
 
   if (document.readyState === 'loading') {
