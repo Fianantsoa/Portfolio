@@ -90,9 +90,10 @@
 
   /* -----------------------------------------------
      2. NAVBAR scroll effect & active link
-  ----------------------------------------------- */
+   ----------------------------------------------- */
   function initNavbar() {
     var navbar = document.getElementById('navbar');
+    if (!navbar) return;
     var links  = document.querySelectorAll('.nav-links a');
 
     window.addEventListener('scroll', function () {
@@ -127,6 +128,7 @@
   function initHamburger() {
     var btn   = document.getElementById('hamburger');
     var menu  = document.getElementById('mobile-menu');
+    if (!btn || !menu) return;
     var links = menu.querySelectorAll('.mobile-link');
 
     function close() {
@@ -345,7 +347,190 @@
   }
 
   /* -----------------------------------------------
-     10. GSAP enhanced animations (if available)
+     10. DESKTOP WINDOW MANAGER
+  ----------------------------------------------- */
+  function initDesktopWindows() {
+    var icons   = document.querySelectorAll('[data-window-target]');
+    var windows = Array.from(document.querySelectorAll('.window'));
+    var taskbar = document.getElementById('taskbar-windows');
+    var clockEl = document.getElementById('taskbar-clock');
+    if (!windows.length || !taskbar) return;
+
+    var zIndex = 6;
+
+    function updateClock() {
+      if (!clockEl) return;
+      var now = new Date();
+      var hh  = String(now.getHours()).padStart(2, '0');
+      var mm  = String(now.getMinutes()).padStart(2, '0');
+      clockEl.textContent = hh + ':' + mm;
+    }
+
+    updateClock();
+    if (clockEl) { setInterval(updateClock, 30000); }
+
+    function updateBlur() {
+      var openCount = windows.filter(function (win) {
+        return win.classList.contains('is-open') && !win.classList.contains('is-minimized');
+      }).length;
+      document.body.classList.toggle('window-open', openCount > 0);
+    }
+
+    function focusWindow(win) {
+      zIndex += 1;
+      windows.forEach(function (w) { w.classList.remove('is-focused'); });
+      win.classList.add('is-focused');
+      win.style.zIndex = zIndex;
+    }
+
+    function revealContent(win) {
+      win.querySelectorAll('.reveal-up, .reveal-fade, .reveal-left, .reveal-right')
+        .forEach(function (el) { el.classList.add('revealed'); });
+
+      win.querySelectorAll('.skill-fill').forEach(function (bar) {
+        var width = bar.getAttribute('data-width') || '0';
+        bar.style.width = width + '%';
+      });
+    }
+
+    function syncTaskbarButton(win) {
+      var id = (win.id || '').replace('window-', '');
+      var existing = taskbar.querySelector('[data-window-target=\"' + id + '\"]');
+      var btn = existing || document.createElement('button');
+      btn.className = 'taskbar-item';
+      btn.type = 'button';
+      btn.setAttribute('data-window-target', id);
+      btn.textContent = win.getAttribute('data-window-title') || id;
+
+      if (!existing) {
+        btn.addEventListener('click', function () {
+          toggleFromTaskbar(win);
+        });
+        taskbar.appendChild(btn);
+      }
+
+      btn.classList.toggle('active', win.classList.contains('is-open') && !win.classList.contains('is-minimized'));
+    }
+
+    function openWindow(win) {
+      win.classList.add('is-open');
+      win.classList.remove('is-minimized');
+      focusWindow(win);
+      revealContent(win);
+      syncTaskbarButton(win);
+      updateBlur();
+    }
+
+    function closeWindow(win) {
+      win.classList.remove('is-open');
+      win.classList.remove('is-minimized');
+      syncTaskbarButton(win);
+      updateBlur();
+    }
+
+    function minimizeWindow(win) {
+      win.classList.add('is-minimized');
+      syncTaskbarButton(win);
+      updateBlur();
+    }
+
+    function toggleFromTaskbar(win) {
+      if (win.classList.contains('is-open') && !win.classList.contains('is-minimized')) {
+        minimizeWindow(win);
+      } else {
+        openWindow(win);
+      }
+    }
+
+    function attachDrag(win, handle) {
+      if (!handle) return;
+      var isDragging = false;
+      var startX = 0, startY = 0, startLeft = 0, startTop = 0;
+
+      function start(e) {
+        if (e.type === 'mousedown' && e.button !== 0) return;
+        isDragging = true;
+        handle.style.cursor = 'grabbing';
+        var rect = win.getBoundingClientRect();
+        startLeft = rect.left;
+        startTop  = rect.top;
+        startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+        startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', end);
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('touchend', end);
+      }
+
+      function drag(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        var clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+        var clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+        var newLeft = startLeft + (clientX - startX);
+        var newTop  = startTop  + (clientY - startY);
+
+        var bounds = document.body.getBoundingClientRect();
+        newLeft = Math.max(bounds.left + 12, Math.min(bounds.right - win.offsetWidth - 12, newLeft));
+        newTop  = Math.max(bounds.top + 12, Math.min(bounds.bottom - win.offsetHeight - 80, newTop));
+
+        win.style.left = newLeft + 'px';
+        win.style.top  = newTop + 'px';
+      }
+
+      function end() {
+        isDragging = false;
+        handle.style.cursor = 'grab';
+        document.removeEventListener('mousemove', drag);
+        document.removeEventListener('mouseup', end);
+        document.removeEventListener('touchmove', drag, { passive: false });
+        document.removeEventListener('touchend', end);
+      }
+
+      handle.addEventListener('mousedown', start);
+      handle.addEventListener('touchstart', start);
+    }
+
+    function positionWindow(win, idx) {
+      var offset = idx * 32;
+      win.style.left = 40 + (offset % 140) + 'px';
+      win.style.top  = 40 + (offset % 100) + 'px';
+    }
+
+    icons.forEach(function (icon) {
+      var id  = icon.getAttribute('data-window-target');
+      var win = document.getElementById('window-' + id);
+      if (!win) return;
+
+      icon.addEventListener('dblclick', function () { openWindow(win); });
+      icon.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openWindow(win);
+        }
+      });
+    });
+
+    windows.forEach(function (win, idx) {
+      var closeBtn = win.querySelector('.win-close');
+      var minBtn   = win.querySelector('.win-min');
+      var bar      = win.querySelector('.window-titlebar');
+
+      if (closeBtn) closeBtn.addEventListener('click', function () { closeWindow(win); });
+      if (minBtn)   minBtn.addEventListener('click',   function () { minimizeWindow(win); });
+      if (bar)      attachDrag(win, bar);
+
+      win.addEventListener('mousedown', function () { focusWindow(win); });
+      positionWindow(win, idx);
+      syncTaskbarButton(win);
+    });
+
+    updateBlur();
+  }
+
+  /* -----------------------------------------------
+     11. GSAP enhanced animations (if available)
   ----------------------------------------------- */
   function initGSAP() {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
@@ -442,6 +627,7 @@
     initProjectFilters();
     initCardTilt();
     initContactForm();
+    initDesktopWindows();
     initGSAP();
   }
 
