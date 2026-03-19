@@ -91,6 +91,9 @@ nav, section, footer {
   z-index: 1;
 }
 
+.desktop-shell { z-index: 2; }
+.window, .taskbar { z-index: 3; }
+
 /* =============================================
    TYPOGRAPHY
    ============================================= */

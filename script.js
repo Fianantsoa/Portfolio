@@ -504,6 +504,7 @@
       if (!win) return;
 
       icon.addEventListener('dblclick', function () { openWindow(win); });
+      icon.addEventListener('click', function () { openWindow(win); });
       icon.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
