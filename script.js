@@ -905,6 +905,106 @@
   }
 
   /* ─────────────────────────────────────────
+     FIRST-VISIT AUTO-OPEN ANIMATION
+  ───────────────────────────────────────── */
+  var FIRST_VISIT_KEY = 'portfolio:aboutAutoOpenDone';
+
+  /**
+   * openWindowFromIcon — FLIP-style pop-out animation.
+   * Opens winEl using the existing openWindow() logic, then overlays
+   * a Web Animations API animation that makes the window appear to
+   * grow from the icon's position to its final rectangle.
+   *
+   * @param {Element} iconEl  The desktop icon element.
+   * @param {Element} winEl   The os-window element.
+   * @param {object}  opts    { animate: boolean }
+   */
+  function openWindowFromIcon(iconEl, winEl, opts) {
+    opts = opts || {};
+    var animate = opts.animate !== false;
+    var id = winEl.id.replace('win-', '');
+
+    // Use existing open logic (adds .open class, updates taskbar/z-index, etc.)
+    openWindow(id);
+
+    // Skip FLIP animation if not desired or user prefers reduced motion
+    if (!animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+
+    // FLIP: measure icon center and window center after it is positioned
+    var iconRect = iconEl.getBoundingClientRect();
+    var winRect  = winEl.getBoundingClientRect();
+
+    var iconCX = iconRect.left + iconRect.width  / 2;
+    var iconCY = iconRect.top  + iconRect.height / 2;
+    var winCX  = winRect.left  + winRect.width   / 2;
+    var winCY  = winRect.top   + winRect.height  / 2;
+
+    // Translation moves the window's center onto the icon's center
+    var tx = iconCX - winCX;
+    var ty = iconCY - winCY;
+
+    // Scale reflects how much smaller the icon is compared to the window
+    var sx = Math.max(0.05, iconRect.width  / winRect.width);
+    var sy = Math.max(0.05, iconRect.height / winRect.height);
+
+    // Web Animations API has higher cascade priority than CSS transitions,
+    // so it cleanly overrides the default .open transition for these properties.
+    winEl.style.willChange = 'transform, opacity';
+    var anim = winEl.animate(
+      [
+        {
+          opacity:   '0',
+          transform: 'translate(' + tx + 'px,' + ty + 'px) scale(' + sx + ',' + sy + ')',
+          filter:    'blur(4px)'
+        },
+        {
+          opacity:   '1',
+          transform: 'translate(0,0) scale(1,1)',
+          filter:    'blur(0px)'
+        }
+      ],
+      {
+        duration: 640,
+        easing:   'cubic-bezier(0.16,1,0.3,1)',
+        fill:     'forwards'
+      }
+    );
+
+    // Clean up after animation so CSS (.open) controls the element again.
+    // This ensures dragging/resizing (which use left/top, not transforms) work normally.
+    anim.addEventListener('finish', function () {
+      winEl.style.willChange = '';
+      winEl.style.opacity    = '';
+      winEl.style.transform  = '';
+      winEl.style.filter     = '';
+    });
+  }
+
+  /**
+   * initFirstVisitAnimation — auto-opens the About window on the first visit
+   * with the pop-out FLIP animation. Uses localStorage to ensure it only
+   * runs once per user. Skipped on mobile and when prefers-reduced-motion is set.
+   */
+  function initFirstVisitAnimation() {
+    if (isMobile()) return;
+    if (localStorage.getItem(FIRST_VISIT_KEY) === '1') return;
+
+    var iconEl = document.querySelector('.desktop-icon[data-icon="about"]');
+    var winEl  = document.getElementById('win-about');
+    if (!iconEl || !winEl) return;
+
+    // Double rAF ensures layout and particles are settled before measuring rects
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        openWindowFromIcon(iconEl, winEl, { animate: true });
+        localStorage.setItem(FIRST_VISIT_KEY, '1');
+      });
+    });
+  }
+
+  /* ─────────────────────────────────────────
      INIT
   ───────────────────────────────────────── */
   function init() {
@@ -923,6 +1023,7 @@
       initTaskbarLogo();
       initModeToggle();
       updateTaskbar();
+      initFirstVisitAnimation();
     } else {
       initModeToggle();
     }
