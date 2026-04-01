@@ -4,7 +4,7 @@
 
 ### Full-Stack Developer | Systems Programmer | Open Source Enthusiast [**View**](https://fianantsoa.github.io/Porfolio-By-Agent/)
 [![GitHub followers](https://img.shields.io/github/followers/Fianantsoa?label=Follow&style=social)](https://github.com/Fianantsoa)
-[![Profile Views]([https://komarev.com/ghpvc/?username=Fianantsoa&color=blue&style=flat)](https://github.com/Fianantsoa](https://fianantsoa.github.io/Portfolio/))
+[![Profile Views](https://fianantsoa.github.io/Portfolio/)
 
 </div>
 
